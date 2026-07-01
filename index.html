@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Points of Interest</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main class="map-page">
+  <div class="map-masthead">
+    <div class="eyebrow">POST TENEBRAS LUX&nbsp;·&nbsp; LUX ESTO UMBRAS FINDENS</div>
+    <h1>POINTS <span>OF</span> INTEREST</h1>
+    <p>WE LIVE IN THE SHADOWS + WE HAD THE CHANCE & THREW IT AWAY.</p>
+  </div>
+
+  <div class="map-frame" id="mapFrame">
+    <img src="POINTS_MAP_PINK.png" alt="Map of points of interest">
+    <!-- waypoints are injected by script.js from locations.js -->
+  </div>
+
+  <div class="map-footer">[A14PH] 2019 · [A14PH] 2026</div>
+</main>
+
+<script src="locations.js"></script>
+<script>
+  const frame = document.getElementById('mapFrame');
+  LOCATIONS.forEach(loc => {
+    const a = document.createElement('a');
+    a.className = 'waypoint';
+    a.href = 'location.html?loc=' + encodeURIComponent(loc.name);
+    a.style.left = loc.x + '%';
+    a.style.top = loc.y + '%';
+    a.textContent = loc.name;
+    a.setAttribute('aria-label', loc.name + ', grid ' + loc.grid);
+    frame.appendChild(a);
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Points of Interest</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+</head>
+<body>
+
+<main class="entry-page">
+  <article class="entry">
+    <a class="back-link" href="index.html">&larr; Back to the map</a>
+
+    <div id="locatorBlock" class="locator" hidden>
+      <span class="dot"></span>
+      <span id="gridLabel"></span>
+    </div>
+
+    <h1 id="title">Loading&hellip;</h1>
+    <div id="body" class="entry-body">
+      <p class="state-message">Reading the file&hellip;</p>
+    </div>
+  </article>
+</main>
+
+<script src="locations.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const name = params.get('loc') || '';
+  const titleEl = document.getElementById('title');
+  const bodyEl = document.getElementById('body');
+  const locatorBlock = document.getElementById('locatorBlock');
+  const gridLabel = document.getElementById('gridLabel');
+
+  const loc = LOCATIONS.find(l => l.name.toLowerCase() === name.toLowerCase());
+
+  if (loc) {
+    titleEl.textContent = loc.name;
+    document.title = loc.name + ' — Points of Interest';
+    gridLabel.textContent = 'Grid ' + loc.grid;
+    locatorBlock.hidden = false;
+  } else {
+    titleEl.textContent = name || 'Unknown location';
+  }
+
+  fetch('content/' + encodeURIComponent(name) + '.md')
+    .then(res => {
+      if (!res.ok) throw new Error('missing');
+      return res.text();
+    })
+    .then(md => {
+      bodyEl.innerHTML = marked.parse(md);
+    })
+    .catch(() => {
+      bodyEl.innerHTML =
+        '<p class="state-message">No entry found yet at <code>content/' +
+        name + '.md</code>. Add that file and reload.<br><br>' +
+        'If you\'re viewing this by double-clicking the HTML file, that\'s also why — ' +
+        'browsers block local file loading for security. Run a local server ' +
+        '(see the README) or upload the site to any static host and it\'ll work.</p>';
+    });
+</script>
+
+</body>
+</html>
